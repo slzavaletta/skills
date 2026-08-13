@@ -1,0 +1,144 @@
+{
+  "project_id": "harbor-platform-augmentation",
+  "client": {
+    "value": "Harbor Logistics",
+    "citation": { "section": "1", "quote": "Client: Harbor Logistics.", "source_line_start": 4, "source_line_end": 4 }
+  },
+  "project_name": {
+    "value": "Platform Augmentation",
+    "citation": { "section": "1", "quote": "Project: Platform Augmentation.", "source_line_start": 5, "source_line_end": 5 }
+  },
+  "engagement_type": {
+    "value": "staff_augmentation",
+    "citation": { "section": "2", "quote": "Engagement model: Staff Augmentation.", "source_line_start": 9, "source_line_end": 9 }
+  },
+  "language": {
+    "value": "English",
+    "citation": { "section": "1", "quote": "Delivery language: English.", "source_line_start": 6, "source_line_end": 6 }
+  },
+  "dates": {
+    "start_date": {
+      "value": "2026-08-01",
+      "citation": { "section": "3", "quote": "The assignment starts on 2026-08-01 and ends on 2027-01-31.", "source_line_start": 14, "source_line_end": 14 }
+    },
+    "end_date": {
+      "value": "2027-01-31",
+      "citation": { "section": "3", "quote": "The assignment starts on 2026-08-01 and ends on 2027-01-31.", "source_line_start": 14, "source_line_end": 14 }
+    }
+  },
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Engineer start date",
+      "date": "2026-08-01",
+      "citation": { "section": "6", "quote": "M1. Engineer start date is 2026-08-01.", "source_line_start": 26, "source_line_end": 26 }
+    },
+    {
+      "id": "M2",
+      "name": "Assignment end date",
+      "date": "2027-01-31",
+      "citation": { "section": "6", "quote": "M2. Assignment end date is 2027-01-31.", "source_line_start": 27, "source_line_end": 27 }
+    }
+  ],
+  "scope_items": [
+    {
+      "id": "S1",
+      "text": "The assigned integration engineer maintains existing API mappings.",
+      "citation": { "section": "4", "quote": "S1. The assigned integration engineer maintains existing API mappings.", "source_line_start": 18, "source_line_end": 18 }
+    },
+    {
+      "id": "S2",
+      "text": "The assigned integration engineer documents the current integration surface.",
+      "citation": { "section": "4", "quote": "S2. The assigned integration engineer documents the current integration surface.", "source_line_start": 19, "source_line_end": 19 }
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "text": "Weekly status notes from the assigned engineer.",
+      "citation": { "section": "5", "quote": "D1. Weekly status notes from the assigned engineer.", "source_line_start": 22, "source_line_end": 22 }
+    },
+    {
+      "id": "D2",
+      "text": "Updated API mapping documentation for existing integrations.",
+      "citation": { "section": "5", "quote": "D2. Updated API mapping documentation for existing integrations.", "source_line_start": 23, "source_line_end": 23 }
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A1",
+      "text": "The client assigns work and sets weekly priorities.",
+      "citation": { "section": "7", "quote": "A1. The client assigns work and sets weekly priorities.", "source_line_start": 30, "source_line_end": 30 }
+    },
+    {
+      "id": "A2",
+      "text": "The client provides system access before the start date.",
+      "citation": { "section": "7", "quote": "A2. The client provides system access before the start date.", "source_line_start": 31, "source_line_end": 31 }
+    }
+  ],
+  "exclusions": [
+    {
+      "id": "E1",
+      "text": "Outcome-based product commitments and conversion-rate guarantees are excluded.",
+      "citation": { "section": "8", "quote": "E1. Outcome-based product commitments and conversion-rate guarantees are excluded.", "source_line_start": 34, "source_line_end": 34 }
+    }
+  ],
+  "slas": [
+    {
+      "id": "SLA1",
+      "text": "The engineer responds to client task questions within one business day.",
+      "citation": { "section": "10", "quote": "SLA1. The engineer responds to client task questions within one business day.", "source_line_start": 43, "source_line_end": 43 }
+    }
+  ],
+  "commercials": {
+    "model": {
+      "value": "staff_augmentation",
+      "citation": { "section": "2", "quote": "Engagement model: Staff Augmentation.", "source_line_start": 9, "source_line_end": 9 }
+    },
+    "currency": {
+      "value": "USD",
+      "citation": { "section": "9", "quote": "The monthly fee is USD 16,000 per FTE.", "source_line_start": 37, "source_line_end": 37 }
+    },
+    "team": [
+      {
+        "role": "integration_engineer",
+        "fte": 1.0,
+        "monthly_hours_per_fte": 160,
+        "monthly_fee_per_fte": 16000,
+        "citation": { "section": "9", "quote": "The monthly fee is USD 16,000 per FTE.", "source_line_start": 37, "source_line_end": 37 }
+      }
+    ],
+    "stated_monthly_fee": {
+      "value": 16000,
+      "citation": { "section": "9", "quote": "The monthly fee is USD 16,000 per FTE.", "source_line_start": 37, "source_line_end": 37 }
+    },
+    "term_months": {
+      "value": 6,
+      "citation": { "section": "3", "quote": "The stated term is 6 months.", "source_line_start": 15, "source_line_end": 15 }
+    },
+    "stated_term_total": {
+      "value": 96000,
+      "citation": { "section": "9", "quote": "The stated term total is USD 96,000.", "source_line_start": 40, "source_line_end": 40 }
+    }
+  },
+  "risk_flags": [
+    {
+      "type": "client_controlled_prioritization",
+      "severity": "medium",
+      "description": "The client assigns work and sets weekly priorities under a staff-augmentation mandate.",
+      "citation": { "section": "7", "quote": "A1. The client assigns work and sets weekly priorities.", "source_line_start": 30, "source_line_end": 30 }
+    }
+  ],
+  "extraction_meta": {
+    "model": "recorded-skill-run",
+    "extracted_at": "2026-08-13T18:00:00Z",
+    "source_file": "sow.md",
+    "fields_not_found": [],
+    "fields_pending_review": []
+  },
+  "human_review": {
+    "status": "approved",
+    "reviewed_at": "2026-08-13T18:30:00Z",
+    "reviewer": "Delivery Manager"
+  }
+}

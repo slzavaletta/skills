@@ -1,0 +1,19 @@
+{
+  "case_id": "staff-augmentation-model-mismatch",
+  "project_id": "harbor-platform-augmentation",
+  "request_source": "inbox/conversion-guarantee.md",
+  "request_summary": "Guarantee a production conversion-rate increase by the end of the month.",
+  "classification": "out_of_scope",
+  "engagement_type": "staff_augmentation",
+  "rationale": "The request asks for an outcome-based conversion-rate guarantee. The contracted mandate supplies one integration engineer and excludes outcome-based product commitments.",
+  "sow_citation": {
+    "section": "8",
+    "quote": "E1. Outcome-based product commitments and conversion-rate guarantees are excluded.",
+    "source_line_start": 34,
+    "source_line_end": 34
+  },
+  "size": "REQUIRES_RESCOPE",
+  "requires_human_review": true,
+  "prompt_injection_detected": false,
+  "risk_flags": ["engagement_model_mismatch"]
+}

@@ -23,7 +23,7 @@
       "case_id": "fixed-ambiguous-after-hours",
       "classification": "ambiguous",
       "engagement_type": "fixed_price",
-      "size": "M",
+      "size": null,
       "requires_human_review": true,
       "prompt_injection_detected": false,
       "risk_flags": ["ambiguous_scope_language"]
@@ -48,7 +48,7 @@
     },
     {
       "case_id": "staff-augmentation-model-mismatch",
-      "classification": "ambiguous",
+      "classification": "out_of_scope",
       "engagement_type": "staff_augmentation",
       "size": "REQUIRES_RESCOPE",
       "requires_human_review": true,

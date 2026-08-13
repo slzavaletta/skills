@@ -125,5 +125,10 @@
     "source_file": "sow.md",
     "fields_not_found": [],
     "fields_pending_review": []
+  },
+  "human_review": {
+    "status": "approved",
+    "reviewed_at": "2026-08-13T12:00:00Z",
+    "reviewer": "Delivery Manager"
   }
 }

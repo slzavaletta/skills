@@ -1,0 +1,24 @@
+{
+  "project_id": "harbor-platform-augmentation",
+  "scalar_fields": {
+    "client": "Harbor Logistics",
+    "project_name": "Platform Augmentation",
+    "engagement_type": "staff_augmentation",
+    "commercials.currency": "USD",
+    "commercials.stated_monthly_fee": 16000,
+    "commercials.stated_term_total": 96000,
+    "dates.start_date": "2026-08-01",
+    "dates.end_date": "2027-01-31"
+  },
+  "counts": {
+    "milestones": 2,
+    "scope_items": 2,
+    "deliverables": 2,
+    "assumptions": 2,
+    "exclusions": 1
+  },
+  "expected_not_found": [],
+  "expected_risk_flags": [
+    "client_controlled_prioritization"
+  ]
+}

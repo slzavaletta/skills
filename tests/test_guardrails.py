@@ -91,6 +91,57 @@ class SchemaGateTests(unittest.TestCase):
             )
         self.assertNotEqual(result.returncode, 0)
 
+    def test_rejects_ambiguous_decision_with_size(self):
+        decision_path = REPO_ROOT / "examples" / "projects" / "harbor-platform-augmentation" / "scope-decision.json"
+        decision = json.loads(decision_path.read_text(encoding="utf-8"))
+        broken = copy.deepcopy(decision)
+        broken["classification"] = "ambiguous"
+        broken["size"] = "M"
+        with tempfile.TemporaryDirectory() as temp:
+            artifact = pathlib.Path(temp) / "broken.json"
+            artifact.write_text(json.dumps(broken), encoding="utf-8")
+            result = run_script(
+                "scripts/validate_schema.py",
+                str(artifact),
+                "schemas/scope-decision.schema.json",
+            )
+        self.assertNotEqual(result.returncode, 0)
+
+
+class BaselineApprovalTests(unittest.TestCase):
+    def test_refuses_unapproved_baseline(self):
+        baseline_path = REPO_ROOT / "examples" / "projects" / "harbor-platform-augmentation" / "baseline.json"
+        baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+        broken = copy.deepcopy(baseline)
+        broken["human_review"] = {"status": "pending", "reviewed_at": None, "reviewer": None}
+        with tempfile.TemporaryDirectory() as temp:
+            artifact = pathlib.Path(temp) / "baseline.json"
+            artifact.write_text(json.dumps(broken), encoding="utf-8")
+            result = run_script("scripts/check_baseline_gate.py", str(artifact))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("STOP", result.stdout + result.stderr)
+
+    def test_accepts_approved_fixture(self):
+        baseline_path = REPO_ROOT / "examples" / "projects" / "harbor-platform-augmentation" / "baseline.json"
+        result = run_script("scripts/check_baseline_gate.py", str(baseline_path))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+class RecordedSkillRunTests(unittest.TestCase):
+    def test_harbor_trace_matches_fixture(self):
+        trace_path = REPO_ROOT / "eval" / "traces" / "harbor-platform-augmentation.intake.json"
+        trace = json.loads(trace_path.read_text(encoding="utf-8"))
+        baseline = json.loads((REPO_ROOT / trace["outputs"]["baseline"]).read_text(encoding="utf-8"))
+        brief = (REPO_ROOT / trace["outputs"]["brief"]).read_text(encoding="utf-8")
+        assertions = trace["assertions"]
+        self.assertEqual(baseline["engagement_type"]["value"], assertions["engagement_type"])
+        self.assertEqual(baseline["extraction_meta"]["fields_not_found"], assertions["fields_not_found"])
+        self.assertEqual(baseline["human_review"]["status"], assertions["human_review_status"])
+        actual_flags = {flag["type"] for flag in baseline["risk_flags"]}
+        self.assertTrue(set(assertions["expected_risk_flags"]).issubset(actual_flags))
+        self.assertIn("Computed monthly total: USD 16,000", brief)
+        self.assertIn("## Kickoff checklist", brief)
+
 
 class PortabilityTests(unittest.TestCase):
     def test_installer_preserves_runtime_layout(self):

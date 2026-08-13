@@ -67,6 +67,10 @@
     {
       "if": { "properties": { "classification": { "const": "in_scope" } } },
       "then": { "properties": { "size": { "type": "null" } } }
+    },
+    {
+      "if": { "properties": { "classification": { "const": "ambiguous" } } },
+      "then": { "properties": { "size": { "type": "null" } } }
     }
   ]
 }

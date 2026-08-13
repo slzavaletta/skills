@@ -23,7 +23,7 @@ Every source-derived value contains an exact quote, section identifier, and sour
 
 Classifies a client request as `in_scope`, `out_of_scope`, or `ambiguous`. It changes its reasoning for fixed-price, time-and-materials, and staff-augmentation engagements.
 
-The skill creates a structured decision before it drafts a change request. A script converts only approved qualitative sizes into hours and cost ranges.
+The skill creates a structured decision before it drafts a change request. It refuses to classify an unapproved baseline. A script converts only out-of-scope qualitative sizes into hours and cost ranges.
 
 ## Safety model
 
@@ -34,7 +34,8 @@ The skill creates a structured decision before it drafts a change request. A scr
 | Conflicting numbers | Preserve every cited value and raise a risk flag |
 | Model-generated arithmetic | Run deterministic commercial and sizing scripts |
 | Prompt injection in a SOW or request | Treat all source content as untrusted data |
-| Premature client commitment | Require explicit human approval |
+| Premature client commitment | Require explicit human approval of the baseline before classification |
+| Ambiguous request | Classify as `ambiguous`, leave `size` null, and stop |
 | Accidental client-data commit | Ignore `projects/`; track only synthetic `examples/` |
 
 ## Pipeline
@@ -49,6 +50,7 @@ SOW (.md/.txt/.pdf)
   -> human-reviewed delivery brief
 
 Client request
+  -> approved-baseline gate
   -> prompt-injection check
   -> engagement-aware classification
   -> scope-decision schema gate
@@ -83,14 +85,15 @@ python -m pip install -r requirements.txt
 python scripts/verify.py
 ```
 
-`verify.py` validates both skills, every JSON artifact, both schemas, all citations, both commercial models, the eval harness, installer behavior, and unit tests.
+`verify.py` validates both skills, every JSON artifact, both schemas, all citations, all three commercial models, the approval gate, the eval harness, the recorded Harbor intake trace, installer behavior, and unit tests.
 
 ## Synthetic demo projects
 
-The repository contains no client data. Two fictional projects under `examples/projects/` make the demo reproducible:
+The repository contains no client data. Three fictional projects under `examples/projects/` make the demo reproducible:
 
 - `acme-support-automation`: fixed-price intake plus an out-of-scope request containing prompt injection.
 - `northstar-analytics`: time-and-materials intake with conflicting monthly caps and a new-data-source request.
+- `harbor-platform-augmentation`: staff-augmentation intake plus an outcome-based request that is outside the role mandate.
 
 Run the individual surfaces:
 
@@ -102,6 +105,8 @@ python scripts/compute_revenue.py examples/projects/northstar-analytics
 ```
 
 The included classification predictions exercise the evaluator. They are labeled examples, not claimed live model results. Replace `eval/predictions/classifications.example.json` with fresh outputs to evaluate another model or prompt revision.
+
+`eval/traces/` stores a recorded Harbor intake pass. That file is the proof that the skill contract was followed on a project folder; the 100% classification score is only a fixture self-check.
 
 ## Installation
 
@@ -130,7 +135,7 @@ schemas/                 Baseline and scope-decision JSON Schemas
 templates/               Delivery Brief and Change Request templates
 config/                  Synthetic sizing policy and rate card
 examples/projects/       Fictional end-to-end fixtures
-eval/                    Gold labels, classification cases, and example predictions
+eval/                    Gold labels, classification cases, example predictions, and recorded traces
 tests/                   Negative and portability tests
 ```
 

@@ -34,6 +34,14 @@ def load_rate_card(project_dir: pathlib.Path):
         return json.load(f), path
 
 
+def display_path(path: pathlib.Path) -> str:
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(REPO_ROOT.resolve())).replace("\\", "/")
+    except ValueError:
+        return str(resolved)
+
+
 def money(amount, currency="USD"):
     return f"{currency} {amount:,.0f}"
 
@@ -45,7 +53,7 @@ def fixed_price(commercials, flags):
 
     print(f"Total fixed price: {money(total, currency) if isinstance(total, (int, float)) else total}")
     if not isinstance(total, (int, float)):
-        flags.append("total_value is missing or NOT_FOUND — cannot verify payment schedule")
+        flags.append("total_value is missing or NOT_FOUND - cannot verify payment schedule")
 
     if schedule:
         print("Payment schedule:")
@@ -60,11 +68,11 @@ def fixed_price(commercials, flags):
         sched_sum = round(sched_sum, 2)
         if isinstance(total, (int, float)):
             if sched_sum == round(total, 2):
-                print(f"Schedule check: OK — milestones sum to {money(sched_sum, currency)}")
+                print(f"Schedule check: OK - milestones sum to {money(sched_sum, currency)}")
             else:
                 flags.append(
                     f"payment schedule sums to {money(sched_sum, currency)} but SOW total is "
-                    f"{money(total, currency)} — discrepancy requires human resolution"
+                    f"{money(total, currency)} - discrepancy requires human resolution"
                 )
     else:
         flags.append("no payment schedule found in baseline")
@@ -85,11 +93,11 @@ def time_and_materials(commercials, rate_card, flags):
     blended = rate_card["blended_hourly_rate"]
     if len(cap_values) > 1:
         flags.append(
-            f"SOW states CONFLICTING monthly hour caps: {cap_values} — "
+            f"SOW states CONFLICTING monthly hour caps: {cap_values} - "
             "human resolution required before any commitment; scenarios below are illustrative only"
         )
     if not cap_values:
-        flags.append("monthly hours cap is NOT_FOUND — run-rate cannot be computed")
+        flags.append("monthly hours cap is NOT_FOUND - run-rate cannot be computed")
 
     for cap in cap_values:
         print(f"Monthly run-rate at {cap:.0f} h cap (blended {money(blended, currency)}/h): {money(cap * blended, currency)}")
@@ -104,7 +112,7 @@ def time_and_materials(commercials, rate_card, flags):
             f"{money(low, currency)} - {money(high, currency)}"
         )
     else:
-        flags.append("engagement duration not anchored to dates — total value cannot be projected (end_date NOT_FOUND)")
+        flags.append("engagement duration not anchored to dates - total value cannot be projected (end_date NOT_FOUND)")
 
 
 def staff_augmentation(commercials, flags):
@@ -137,7 +145,7 @@ def staff_augmentation(commercials, flags):
                 f"{money(computed_term, currency)}"
             )
     else:
-        flags.append("term_months not set in baseline commercials — term total not computed")
+        flags.append("term_months not set in baseline commercials - term total not computed")
 
 
 def main():
@@ -148,7 +156,7 @@ def main():
     project_dir = pathlib.Path(args.project_dir)
     baseline_path = project_dir / "baseline.json"
     if not baseline_path.exists():
-        sys.exit(f"No baseline.json in {project_dir} — run sow-intake first.")
+        sys.exit(f"No baseline.json in {project_dir} - run sow-intake first.")
 
     with open(baseline_path, encoding="utf-8") as f:
         baseline = json.load(f)
@@ -160,7 +168,7 @@ def main():
 
     print(f"Project: {baseline.get('project_id', project_dir.name)}")
     print(f"Engagement type: {engagement}")
-    print(f"Rate card: {rate_card_path}\n")
+    print(f"Rate card: {display_path(rate_card_path)}\n")
 
     if engagement == "fixed_price":
         fixed_price(commercials, flags)
@@ -172,7 +180,7 @@ def main():
         flags.append(f"unknown or NOT_FOUND engagement type: {engagement!r}")
 
     if flags:
-        print("\nFLAGS (copy into the brief's risk section — human resolution required):")
+        print("\nFLAGS (copy into the brief's risk section - human resolution required):")
         for flag in flags:
             print(f"  - {flag}")
     else:

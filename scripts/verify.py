@@ -42,7 +42,14 @@ def main():
     run("skill metadata", PYTHON, "scripts/validate_skills.py")
 
     projects = REPO_ROOT / "examples" / "projects"
-    for project in ("acme-support-automation", "northstar-analytics"):
+    extra_decisions = {
+        "harbor-platform-augmentation": ["scope-decision-in-scope.json"],
+    }
+    for project in (
+        "acme-support-automation",
+        "northstar-analytics",
+        "harbor-platform-augmentation",
+    ):
         project_dir = projects / project
         run(
             f"baseline schema: {project}",
@@ -59,19 +66,27 @@ def main():
             str(project_dir / "sow.md"),
         )
         run(
-            f"scope decision schema: {project}",
+            f"baseline approval gate: {project}",
             PYTHON,
-            "scripts/validate_schema.py",
-            str(project_dir / "scope-decision.json"),
-            "schemas/scope-decision.schema.json",
+            "scripts/check_baseline_gate.py",
+            str(project_dir / "baseline.json"),
         )
-        run(
-            f"scope decision citation: {project}",
-            PYTHON,
-            "scripts/validate_citations.py",
-            str(project_dir / "scope-decision.json"),
-            str(project_dir / "sow.md"),
-        )
+        decision_files = ["scope-decision.json", *extra_decisions.get(project, [])]
+        for decision_name in decision_files:
+            run(
+                f"scope decision schema: {project}/{decision_name}",
+                PYTHON,
+                "scripts/validate_schema.py",
+                str(project_dir / decision_name),
+                "schemas/scope-decision.schema.json",
+            )
+            run(
+                f"scope decision citation: {project}/{decision_name}",
+                PYTHON,
+                "scripts/validate_citations.py",
+                str(project_dir / decision_name),
+                str(project_dir / "sow.md"),
+            )
         run(f"commercial calculation: {project}", PYTHON, "scripts/compute_revenue.py", str(project_dir))
 
     run("evaluation harness", PYTHON, "eval/run_eval.py")

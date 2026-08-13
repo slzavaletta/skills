@@ -36,7 +36,7 @@
       "expected": {
         "classification": "ambiguous",
         "engagement_type": "fixed_price",
-        "size": "M",
+        "size": null,
         "requires_human_review": true,
         "prompt_injection_detected": false,
         "risk_flags": ["ambiguous_scope_language"]
@@ -72,11 +72,11 @@
     },
     {
       "case_id": "staff-augmentation-model-mismatch",
+      "project_id": "harbor-platform-augmentation",
       "engagement_type": "staff_augmentation",
-      "request": "Guarantee a production conversion-rate increase by the end of the month.",
-      "contract_context": "The contract supplies one integration engineer under client prioritization.",
+      "request_file": "examples/projects/harbor-platform-augmentation/inbox/conversion-guarantee.md",
       "expected": {
-        "classification": "ambiguous",
+        "classification": "out_of_scope",
         "engagement_type": "staff_augmentation",
         "size": "REQUIRES_RESCOPE",
         "requires_human_review": true,
@@ -86,9 +86,9 @@
     },
     {
       "case_id": "staff-augmentation-role-task",
+      "project_id": "harbor-platform-augmentation",
       "engagement_type": "staff_augmentation",
-      "request": "Ask the assigned integration engineer to document the existing API mapping.",
-      "contract_context": "The assigned integration engineer maintains and documents API integrations.",
+      "request_file": "examples/projects/harbor-platform-augmentation/inbox/document-api-mapping.md",
       "expected": {
         "classification": "in_scope",
         "engagement_type": "staff_augmentation",

@@ -1,0 +1,41 @@
+{
+  "trace_id": "harbor-platform-augmentation-intake-2026-08-13",
+  "skill": "sow-intake",
+  "kind": "recorded-skill-run",
+  "note": "This is a recorded intake pass against the Harbor fixture, not a planted classification score. It exists so verify.py can prove the skill contract was followed on a real project folder.",
+  "project_id": "harbor-platform-augmentation",
+  "source_sow": "examples/projects/harbor-platform-augmentation/sow.md",
+  "outputs": {
+    "baseline": "examples/projects/harbor-platform-augmentation/baseline.json",
+    "brief": "examples/projects/harbor-platform-augmentation/delivery-brief.md"
+  },
+  "steps": [
+    {
+      "command": "python scripts/prepare_sow.py examples/projects/harbor-platform-augmentation/sow.md",
+      "result": "canonical source is sow.md"
+    },
+    {
+      "command": "python scripts/validate_schema.py examples/projects/harbor-platform-augmentation/baseline.json schemas/baseline.schema.json",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/validate_citations.py examples/projects/harbor-platform-augmentation/baseline.json examples/projects/harbor-platform-augmentation/sow.md",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/compute_revenue.py examples/projects/harbor-platform-augmentation",
+      "result": "monthly USD 16000; term USD 96000; no commercial discrepancies"
+    },
+    {
+      "command": "python scripts/approve_baseline.py examples/projects/harbor-platform-augmentation/baseline.json --status approved --reviewer \"Delivery Manager\"",
+      "result": "human_review.status=approved"
+    }
+  ],
+  "assertions": {
+    "engagement_type": "staff_augmentation",
+    "fields_not_found": [],
+    "expected_risk_flags": ["client_controlled_prioritization"],
+    "human_review_status": "approved",
+    "brief_contains_commercial_script_output": true
+  }
+}

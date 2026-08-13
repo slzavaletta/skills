@@ -1,0 +1,19 @@
+{
+  "case_id": "staff-augmentation-role-task",
+  "project_id": "harbor-platform-augmentation",
+  "request_source": "inbox/document-api-mapping.md",
+  "request_summary": "Ask the assigned integration engineer to document the existing API mapping.",
+  "classification": "in_scope",
+  "engagement_type": "staff_augmentation",
+  "rationale": "Documenting the existing API mapping is inside the contracted role mandate and deliverable D2.",
+  "sow_citation": {
+    "section": "4",
+    "quote": "S2. The assigned integration engineer documents the current integration surface.",
+    "source_line_start": 19,
+    "source_line_end": 19
+  },
+  "size": null,
+  "requires_human_review": false,
+  "prompt_injection_detected": false,
+  "risk_flags": []
+}

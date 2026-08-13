@@ -19,7 +19,8 @@
     "slas",
     "commercials",
     "risk_flags",
-    "extraction_meta"
+    "extraction_meta",
+    "human_review"
   ],
   "definitions": {
     "citation": {
@@ -301,6 +302,17 @@
         "source_file": { "type": "string", "minLength": 1 },
         "fields_not_found": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
         "fields_pending_review": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "human_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "description": "Intake writes pending. A human must approve before scope-sentinel may classify.",
+      "properties": {
+        "status": { "enum": ["pending", "approved", "rejected"] },
+        "reviewed_at": { "type": ["string", "null"], "format": "date-time" },
+        "reviewer": { "type": ["string", "null"], "minLength": 1 }
       }
     }
   }
