@@ -1,26 +1,99 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Delivery Baseline",
-  "description": "Persistent per-project memory produced by sow-intake and consumed by scope-sentinel. Every extracted value carries a verbatim citation to the source SOW, or the literal string NOT_FOUND. No field may contain a value invented by the model.",
+  "description": "Persistent per-project memory produced by sow-intake. Every source-derived value carries a source citation or the literal string NOT_FOUND.",
   "type": "object",
-  "required": ["project_id", "client", "project_name", "engagement_type", "dates", "scope_items", "commercials", "risk_flags", "extraction_meta"],
+  "additionalProperties": false,
+  "required": [
+    "project_id",
+    "client",
+    "project_name",
+    "engagement_type",
+    "language",
+    "dates",
+    "milestones",
+    "scope_items",
+    "deliverables",
+    "assumptions",
+    "exclusions",
+    "slas",
+    "commercials",
+    "risk_flags",
+    "extraction_meta"
+  ],
   "definitions": {
     "citation": {
       "type": "object",
-      "required": ["section", "quote"],
+      "additionalProperties": false,
+      "required": ["section", "quote", "source_line_start", "source_line_end"],
       "properties": {
-        "section": { "type": "string", "description": "Section or clause identifier, e.g. '3.2', 'E1', 'M4'" },
-        "quote": { "type": "string", "description": "Verbatim quote copied from the SOW. Verified by scripts/validate_citations.py" }
+        "section": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Section or clause identifier, for example 3.2, E1, or M4."
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Exact source text. validate_citations.py rejects normalized or approximate matches."
+        },
+        "source_line_start": { "type": "integer", "minimum": 1 },
+        "source_line_end": { "type": "integer", "minimum": 1 }
       }
     },
-    "cited_value": {
+    "cited_string": {
       "oneOf": [
         { "const": "NOT_FOUND" },
         {
           "type": "object",
+          "additionalProperties": false,
           "required": ["value", "citation"],
           "properties": {
-            "value": { "type": ["string", "number"] },
+            "value": { "type": "string", "minLength": 1 },
+            "citation": { "$ref": "#/definitions/citation" }
+          }
+        }
+      ]
+    },
+    "cited_number": {
+      "oneOf": [
+        { "const": "NOT_FOUND" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "citation"],
+          "properties": {
+            "value": { "type": "number" },
+            "citation": { "$ref": "#/definitions/citation" }
+          }
+        }
+      ]
+    },
+    "cited_date": {
+      "oneOf": [
+        { "const": "NOT_FOUND" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "citation"],
+          "properties": {
+            "value": { "type": "string", "format": "date" },
+            "citation": { "$ref": "#/definitions/citation" }
+          }
+        }
+      ]
+    },
+    "cited_engagement": {
+      "oneOf": [
+        { "const": "NOT_FOUND" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "citation"],
+          "properties": {
+            "value": {
+              "enum": ["fixed_price", "time_and_materials", "staff_augmentation"]
+            },
             "citation": { "$ref": "#/definitions/citation" }
           }
         }
@@ -28,44 +101,49 @@
     },
     "cited_item": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["id", "text", "citation"],
       "properties": {
-        "id": { "type": "string" },
-        "text": { "type": "string" },
+        "id": { "type": "string", "minLength": 1 },
+        "text": { "type": "string", "minLength": 1 },
         "citation": { "$ref": "#/definitions/citation" }
       }
     }
   },
   "properties": {
-    "project_id": { "type": "string", "description": "Equal to the project folder name. Convention: <client>-<project> slug." },
-    "client": { "type": "string" },
-    "project_name": { "type": "string" },
-    "engagement_type": {
-      "type": "object",
-      "required": ["value", "citation"],
-      "properties": {
-        "value": { "enum": ["fixed_price", "time_and_materials", "staff_augmentation"] },
-        "citation": { "$ref": "#/definitions/citation" }
-      }
+    "project_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Equal to the project folder name. This identifier comes from the filesystem, not the SOW."
     },
-    "language": { "type": "string" },
+    "client": { "$ref": "#/definitions/cited_string" },
+    "project_name": { "$ref": "#/definitions/cited_string" },
+    "engagement_type": { "$ref": "#/definitions/cited_engagement" },
+    "language": { "$ref": "#/definitions/cited_string" },
     "dates": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["start_date", "end_date"],
       "properties": {
-        "start_date": { "$ref": "#/definitions/cited_value", "description": "ISO date. Convention: first contractual milestone or term start." },
-        "end_date": { "$ref": "#/definitions/cited_value", "description": "ISO date. Convention: last contractual milestone or term end." }
+        "start_date": { "$ref": "#/definitions/cited_date" },
+        "end_date": { "$ref": "#/definitions/cited_date" }
       }
     },
     "milestones": {
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["id", "name", "date", "citation"],
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "date": { "type": "string", "description": "ISO date, 'TBD' if explicitly undefined in the SOW, or 'NOT_FOUND'" },
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "date": {
+            "oneOf": [
+              { "type": "string", "format": "date" },
+              { "enum": ["TBD", "NOT_FOUND"] }
+            ]
+          },
           "citation": { "$ref": "#/definitions/citation" }
         }
       }
@@ -77,82 +155,152 @@
     "slas": { "type": "array", "items": { "$ref": "#/definitions/cited_item" } },
     "commercials": {
       "type": "object",
-      "required": ["model"],
+      "additionalProperties": false,
+      "required": ["model", "currency"],
       "properties": {
-        "model": { "enum": ["fixed_price", "time_and_materials", "staff_augmentation"] },
-        "currency": { "type": "string" },
-        "total_value": { "type": ["number", "string"], "description": "Fixed price only. Number or NOT_FOUND." },
+        "model": { "$ref": "#/definitions/cited_engagement" },
+        "currency": { "$ref": "#/definitions/cited_string" },
+        "total_value": { "$ref": "#/definitions/cited_number" },
         "payment_schedule": {
           "type": "array",
-          "description": "Fixed price only.",
           "items": {
             "type": "object",
+            "additionalProperties": false,
+            "required": ["trigger", "percent", "amount", "citation"],
             "properties": {
-              "trigger": { "type": "string" },
-              "percent": { "type": "number" },
-              "amount": { "type": "number" },
+              "trigger": { "type": "string", "minLength": 1 },
+              "percent": { "type": "number", "minimum": 0, "maximum": 100 },
+              "amount": { "type": "number", "minimum": 0 },
               "citation": { "$ref": "#/definitions/citation" }
             }
           }
         },
         "rates": {
-          "type": "object",
-          "description": "T&M only. Map of role to hourly rate as stated in the SOW.",
-          "additionalProperties": { "type": "number" }
-        },
-        "monthly_hours_cap": {
-          "type": ["number", "array", "string"],
-          "description": "T&M only. If the SOW states conflicting caps, record ALL stated values as an array — never pick one. NOT_FOUND if absent."
-        },
-        "estimated_duration_weeks": { "type": ["array", "string"], "description": "T&M only. [min, max] or NOT_FOUND." },
-        "team": {
           "type": "array",
-          "description": "Staff augmentation only.",
           "items": {
             "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "hourly_rate", "citation"],
             "properties": {
-              "role": { "type": "string" },
-              "fte": { "type": "number" },
-              "monthly_hours_per_fte": { "type": "number" },
-              "monthly_fee_per_fte": { "type": "number" },
+              "role": { "type": "string", "minLength": 1 },
+              "hourly_rate": { "type": "number", "minimum": 0 },
               "citation": { "$ref": "#/definitions/citation" }
             }
           }
         },
-        "stated_monthly_fee": { "type": ["number", "string"] },
-        "stated_term_total": { "type": ["number", "string"] }
-      }
+        "monthly_hours_cap": {
+          "oneOf": [
+            { "const": "NOT_FOUND" },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["value", "citation"],
+                "properties": {
+                  "value": { "type": "number", "minimum": 0 },
+                  "citation": { "$ref": "#/definitions/citation" }
+                }
+              }
+            }
+          ]
+        },
+        "estimated_duration_weeks": {
+          "oneOf": [
+            { "const": "NOT_FOUND" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["value", "citation"],
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "items": { "type": "number", "minimum": 0 },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "citation": { "$ref": "#/definitions/citation" }
+              }
+            }
+          ]
+        },
+        "team": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "fte", "monthly_hours_per_fte", "monthly_fee_per_fte", "citation"],
+            "properties": {
+              "role": { "type": "string", "minLength": 1 },
+              "fte": { "type": "number", "minimum": 0 },
+              "monthly_hours_per_fte": { "type": "number", "minimum": 0 },
+              "monthly_fee_per_fte": { "type": "number", "minimum": 0 },
+              "citation": { "$ref": "#/definitions/citation" }
+            }
+          }
+        },
+        "stated_monthly_fee": { "$ref": "#/definitions/cited_number" },
+        "term_months": { "$ref": "#/definitions/cited_number" },
+        "stated_term_total": { "$ref": "#/definitions/cited_number" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "model": { "type": "object", "required": ["value"], "properties": { "value": { "const": "fixed_price" } } } } },
+          "then": { "required": ["total_value", "payment_schedule"] }
+        },
+        {
+          "if": { "properties": { "model": { "type": "object", "required": ["value"], "properties": { "value": { "const": "time_and_materials" } } } } },
+          "then": { "required": ["rates", "monthly_hours_cap", "estimated_duration_weeks"] }
+        },
+        {
+          "if": { "properties": { "model": { "type": "object", "required": ["value"], "properties": { "value": { "const": "staff_augmentation" } } } } },
+          "then": { "required": ["team", "stated_monthly_fee", "term_months", "stated_term_total"] }
+        }
+      ]
     },
     "risk_flags": {
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["type", "severity", "description"],
         "properties": {
           "type": {
             "enum": [
-              "missing_end_date", "missing_start_date", "milestone_tbd",
-              "missing_assumptions_section", "missing_exclusions_section",
-              "undefined_sla_reference", "hours_cap_contradiction",
-              "numeric_contradiction", "engagement_model_mismatch",
-              "client_controlled_prioritization", "undefined_urgent_support_sla",
-              "unusual_penalty", "ambiguous_scope_language", "other"
+              "missing_end_date",
+              "missing_start_date",
+              "milestone_tbd",
+              "missing_assumptions_section",
+              "missing_exclusions_section",
+              "undefined_sla_reference",
+              "hours_cap_contradiction",
+              "numeric_contradiction",
+              "engagement_model_mismatch",
+              "client_controlled_prioritization",
+              "undefined_urgent_support_sla",
+              "unusual_penalty",
+              "ambiguous_scope_language",
+              "prompt_injection_detected",
+              "other"
             ]
           },
           "severity": { "enum": ["low", "medium", "high"] },
-          "description": { "type": "string" },
+          "description": { "type": "string", "minLength": 1 },
           "citation": { "$ref": "#/definitions/citation" }
         }
       }
     },
     "extraction_meta": {
       "type": "object",
-      "required": ["extracted_at", "fields_not_found", "fields_pending_review"],
+      "additionalProperties": false,
+      "required": ["extracted_at", "source_file", "fields_not_found", "fields_pending_review"],
       "properties": {
         "model": { "type": "string" },
-        "extracted_at": { "type": "string" },
-        "fields_not_found": { "type": "array", "items": { "type": "string" } },
-        "fields_pending_review": { "type": "array", "items": { "type": "string" }, "description": "Fields whose citation failed validation or that require human judgment." }
+        "extracted_at": { "type": "string", "format": "date-time" },
+        "source_file": { "type": "string", "minLength": 1 },
+        "fields_not_found": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "fields_pending_review": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
       }
     }
   }

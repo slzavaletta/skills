@@ -1,0 +1,21 @@
+{
+  "project_id": "acme-support-automation",
+  "scalar_fields": {
+    "client": "Acme Services",
+    "project_name": "Support Automation",
+    "engagement_type": "fixed_price",
+    "commercials.currency": "USD",
+    "commercials.total_value": 48000,
+    "dates.start_date": "2026-09-01",
+    "dates.end_date": "2026-11-30"
+  },
+  "counts": {
+    "milestones": 2,
+    "scope_items": 2,
+    "deliverables": 2,
+    "assumptions": 2,
+    "exclusions": 1
+  },
+  "expected_not_found": [],
+  "expected_risk_flags": []
+}

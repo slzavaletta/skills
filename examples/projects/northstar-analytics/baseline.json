@@ -1,0 +1,131 @@
+{
+  "project_id": "northstar-analytics",
+  "client": {
+    "value": "Northstar Retail",
+    "citation": { "section": "1", "quote": "Client: Northstar Retail.", "source_line_start": 4, "source_line_end": 4 }
+  },
+  "project_name": {
+    "value": "Analytics Enablement",
+    "citation": { "section": "1", "quote": "Project: Analytics Enablement.", "source_line_start": 5, "source_line_end": 5 }
+  },
+  "engagement_type": {
+    "value": "time_and_materials",
+    "citation": { "section": "2", "quote": "Engagement model: Time and Materials.", "source_line_start": 9, "source_line_end": 9 }
+  },
+  "language": {
+    "value": "English",
+    "citation": { "section": "1", "quote": "Delivery language: English.", "source_line_start": 6, "source_line_end": 6 }
+  },
+  "dates": {
+    "start_date": {
+      "value": "2026-10-01",
+      "citation": { "section": "3", "quote": "Work starts on 2026-10-01; the completion date depends on client prioritization.", "source_line_start": 16, "source_line_end": 16 }
+    },
+    "end_date": "NOT_FOUND"
+  },
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Discovery begins",
+      "date": "2026-10-01",
+      "citation": { "section": "6", "quote": "M1. Discovery begins on 2026-10-01.", "source_line_start": 26, "source_line_end": 26 }
+    }
+  ],
+  "scope_items": [
+    {
+      "id": "S1",
+      "text": "Build dashboard variants using the existing warehouse tables.",
+      "citation": { "section": "4", "quote": "S1. Build dashboard variants using the existing warehouse tables.", "source_line_start": 19, "source_line_end": 19 }
+    },
+    {
+      "id": "S2",
+      "text": "Configure scheduled email delivery for approved dashboards.",
+      "citation": { "section": "4", "quote": "S2. Configure scheduled email delivery for approved dashboards.", "source_line_start": 20, "source_line_end": 20 }
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "text": "Configured dashboard variants using existing data.",
+      "citation": { "section": "5", "quote": "D1. Configured dashboard variants using existing data.", "source_line_start": 23, "source_line_end": 23 }
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A1",
+      "text": "The client maintains the existing warehouse tables and grants read access.",
+      "citation": { "section": "7", "quote": "A1. The client maintains the existing warehouse tables and grants read access.", "source_line_start": 29, "source_line_end": 29 }
+    }
+  ],
+  "exclusions": [
+    {
+      "id": "E1",
+      "text": "New external data sources and new ingestion pipelines are excluded.",
+      "citation": { "section": "8", "quote": "E1. New external data sources and new ingestion pipelines are excluded.", "source_line_start": 32, "source_line_end": 32 }
+    }
+  ],
+  "slas": [
+    {
+      "id": "SLA1",
+      "text": "Delivery questions receive an initial response within two business days.",
+      "citation": { "section": "10", "quote": "SLA1. Delivery questions receive an initial response within two business days.", "source_line_start": 38, "source_line_end": 38 }
+    }
+  ],
+  "commercials": {
+    "model": {
+      "value": "time_and_materials",
+      "citation": { "section": "2", "quote": "Engagement model: Time and Materials.", "source_line_start": 9, "source_line_end": 9 }
+    },
+    "currency": {
+      "value": "USD",
+      "citation": { "section": "2", "quote": "All rates and fees are stated in USD.", "source_line_start": 10, "source_line_end": 10 }
+    },
+    "rates": [
+      {
+        "role": "integration_engineer",
+        "hourly_rate": 110,
+        "citation": { "section": "2", "quote": "The integration engineer rate is USD 110 per hour.", "source_line_start": 11, "source_line_end": 11 }
+      }
+    ],
+    "monthly_hours_cap": [
+      {
+        "value": 120,
+        "citation": { "section": "2", "quote": "Work is capped at 120 hours per month.", "source_line_start": 12, "source_line_end": 12 }
+      },
+      {
+        "value": 160,
+        "citation": { "section": "9", "quote": "For planning purposes, the monthly delivery cap is 160 hours.", "source_line_start": 35, "source_line_end": 35 }
+      }
+    ],
+    "estimated_duration_weeks": {
+      "value": [8, 12],
+      "citation": { "section": "2", "quote": "The estimated duration is 8 to 12 weeks.", "source_line_start": 13, "source_line_end": 13 }
+    }
+  },
+  "risk_flags": [
+    {
+      "type": "missing_end_date",
+      "severity": "high",
+      "description": "The SOW does not define a contractual completion date."
+    },
+    {
+      "type": "hours_cap_contradiction",
+      "severity": "high",
+      "description": "The SOW states monthly caps of 120 and 160 hours.",
+      "citation": { "section": "9", "quote": "For planning purposes, the monthly delivery cap is 160 hours.", "source_line_start": 35, "source_line_end": 35 }
+    },
+    {
+      "type": "client_controlled_prioritization",
+      "severity": "medium",
+      "description": "Completion depends on client prioritization.",
+      "citation": { "section": "3", "quote": "Work starts on 2026-10-01; the completion date depends on client prioritization.", "source_line_start": 16, "source_line_end": 16 }
+    }
+  ],
+  "extraction_meta": {
+    "model": "synthetic-fixture",
+    "extracted_at": "2026-08-13T00:00:00Z",
+    "source_file": "sow.md",
+    "fields_not_found": ["dates.end_date"],
+    "fields_pending_review": []
+  }
+}

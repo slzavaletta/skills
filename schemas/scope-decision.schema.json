@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scope Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "project_id",
+    "request_source",
+    "request_summary",
+    "classification",
+    "engagement_type",
+    "rationale",
+    "sow_citation",
+    "size",
+    "requires_human_review",
+    "prompt_injection_detected",
+    "risk_flags"
+  ],
+  "definitions": {
+    "citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section", "quote", "source_line_start", "source_line_end"],
+      "properties": {
+        "section": { "type": "string", "minLength": 1 },
+        "quote": { "type": "string", "minLength": 20 },
+        "source_line_start": { "type": "integer", "minimum": 1 },
+        "source_line_end": { "type": "integer", "minimum": 1 }
+      }
+    }
+  },
+  "properties": {
+    "case_id": { "type": "string", "minLength": 1 },
+    "project_id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "request_source": { "type": "string", "minLength": 1 },
+    "request_summary": { "type": "string", "minLength": 1 },
+    "classification": { "enum": ["in_scope", "out_of_scope", "ambiguous"] },
+    "engagement_type": { "enum": ["fixed_price", "time_and_materials", "staff_augmentation"] },
+    "rationale": { "type": "string", "minLength": 1 },
+    "sow_citation": {
+      "oneOf": [
+        { "const": "NOT_FOUND" },
+        { "$ref": "#/definitions/citation" }
+      ]
+    },
+    "size": {
+      "oneOf": [
+        { "type": "null" },
+        { "enum": ["S", "M", "L", "REQUIRES_RESCOPE"] }
+      ]
+    },
+    "requires_human_review": { "type": "boolean" },
+    "prompt_injection_detected": { "type": "boolean" },
+    "risk_flags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "sow_citation": { "const": "NOT_FOUND" } } },
+      "then": {
+        "properties": {
+          "classification": { "const": "ambiguous" },
+          "requires_human_review": { "const": true }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "classification": { "const": "in_scope" } } },
+      "then": { "properties": { "size": { "type": "null" } } }
+    }
+  ]
+}

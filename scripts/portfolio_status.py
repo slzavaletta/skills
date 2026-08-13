@@ -10,12 +10,14 @@ intelligence layer.
 
 Usage:
     python scripts/portfolio_status.py
+    python scripts/portfolio_status.py --projects-dir projects
 """
+import argparse
 import json
 import pathlib
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-PROJECTS_DIR = REPO_ROOT / "projects"
+DEFAULT_PROJECTS_DIR = REPO_ROOT / "examples" / "projects"
 
 
 def unwrap(value):
@@ -38,10 +40,18 @@ def load_changelog(project_dir: pathlib.Path):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--projects-dir", type=pathlib.Path, default=DEFAULT_PROJECTS_DIR)
+    args = parser.parse_args()
+    projects_dir = args.projects_dir
+
+    if not projects_dir.is_dir():
+        raise SystemExit(f"Projects directory does not exist: {projects_dir}")
+
     rows = []
     total_events = []
 
-    for project_dir in sorted(PROJECTS_DIR.iterdir()):
+    for project_dir in sorted(projects_dir.iterdir()):
         if not project_dir.is_dir():
             continue
         baseline_path = project_dir / "baseline.json"

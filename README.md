@@ -1,66 +1,144 @@
-# Skills for PMs / DMs
+# Delivery Guardrails for Agentic AI
 
-> Agentic Claude skills that put guardrails around software delivery — built by a delivery PM, for project and delivery managers.
+Two portable AI skills for delivery management. They turn a Statement of Work (SOW) into a cited project baseline, then classify incoming requests against that baseline without letting the model invent evidence or commercial estimates.
 
-Straight from my `.claude/` directory. Two skills I run on real delivery work: one turns a Statement of Work into living, cited project memory; the other guards that baseline against scope creep — both with a human holding the final pen.
+The repository demonstrates a practical division of responsibility:
 
-## The problem they solve
+- The AI extracts, classifies, explains, and drafts.
+- Deterministic scripts validate structure, evidence, and arithmetic.
+- A human approves every consequential result.
 
-Most "AI for PMs" tooling stops at summarizing a call or drafting a status update. The parts of delivery that actually leak money — scope interpretation, SOW intake, change-request discipline — are the parts where an LLM left unsupervised is a liability: it will confidently cite a clause that doesn't exist, invent an effort estimate, or draft something client-facing that should never have left your outbox.
+## Skills
 
-These skills are built inside-out from that risk. The model reads, classifies, and drafts. Deterministic scripts handle anything that must never be guessed — citation checks, hours-and-cost math. A human approves anything with consequences. The result is closer to a delivery analyst who always shows their sources than to a chatbot with opinions.
+### `sow-intake`
 
-## The two skills
+Creates two project artifacts:
 
-**`sow-intake`** — runs first. Reads a SOW and produces the project's persistent baseline: a machine-readable `baseline.json` and a human-readable Delivery Brief. Every extracted value carries a verbatim citation to the source clause. Missing fields are recorded as `NOT_FOUND`, conflicting values are flagged rather than silently resolved, and all money and date arithmetic is done by script — never by the model.
+- `baseline.json`: structured project memory validated against a JSON Schema.
+- `delivery-brief.md`: a readable summary for kickoff and delivery governance.
 
-**`scope-sentinel`** — runs after. Takes an incoming client request (email, meeting minutes, a chat message) and classifies it against that baseline: in-scope, out-of-scope, or ambiguous. Each call cites the exact clause, sizes the effort with a t-shirt estimate, and drafts a change request for human approval. It's engagement-aware — the question it asks itself changes for fixed-price vs. time-and-materials vs. staff-augmentation work.
+Every source-derived value contains an exact quote, section identifier, and source line range. Missing facts remain `NOT_FOUND`. Contradictions remain visible.
 
-Together they form a small pipeline: a SOW becomes a verified baseline, and that baseline becomes the reference every future request is measured against.
+### `scope-sentinel`
 
-## Design principles
+Classifies a client request as `in_scope`, `out_of_scope`, or `ambiguous`. It changes its reasoning for fixed-price, time-and-materials, and staff-augmentation engagements.
 
-The skills are opinionated about one thing: **where the model is allowed to be trusted, and where it isn't.**
+The skill creates a structured decision before it drafts a change request. A script converts only approved qualitative sizes into hours and cost ranges.
 
-- **Division of labor.** The LLM classifies and drafts. Scripts verify citations and do all arithmetic. The model never states an hours or dollar figure it didn't get from a script.
-- **No claim without a citation.** Every classification and every extracted field quotes the source verbatim, and the quote is validated against the document. A value whose citation fails validation isn't downgraded politely — it ceases to exist and routes to a human.
-- **A human holds the pen.** Nothing client-facing is ever sent or marked as sent. Change requests and baselines stay drafts until a person approves them; only then is anything logged.
-- **Fail loud, not confident.** Given an incomplete or contradictory SOW, the correct output is a baseline full of `NOT_FOUND`s and risk flags — not a clean-looking brief that papers over the gaps. "I couldn't find the end date; human review required" is the feature, not the bug.
+## Safety model
 
-## Tested, not just written
+| Risk | Control |
+|---|---|
+| Invented SOW claim | Exact quote, line-range, and nearby-section validation |
+| Missing citations | JSON Schema requires cited wrappers for source-derived values |
+| Conflicting numbers | Preserve every cited value and raise a risk flag |
+| Model-generated arithmetic | Run deterministic commercial and sizing scripts |
+| Prompt injection in a SOW or request | Treat all source content as untrusted data |
+| Premature client commitment | Require explicit human approval |
+| Accidental client-data commit | Ignore `projects/`; track only synthetic `examples/` |
 
-The skills ship with an evaluation harness (`eval/`): a gold set of fixtures and `run_eval.py`, so changes to a skill are measured against expected classifications and extractions instead of eyeballed. The same discipline the skills enforce on delivery, applied to the skills themselves.
+## Pipeline
 
-## Repo structure
+```text
+SOW (.md/.txt/.pdf)
+  -> canonical UTF-8 source
+  -> AI extraction
+  -> baseline schema gate
+  -> exact citation gate
+  -> deterministic commercial check
+  -> human-reviewed delivery brief
 
-The two skill definitions live in `skills/` and share the tooling at the repo root:
-
+Client request
+  -> prompt-injection check
+  -> engagement-aware classification
+  -> scope-decision schema gate
+  -> exact citation gate
+  -> deterministic size-to-cost conversion
+  -> human approval
 ```
-.
-├── skills/
-│   ├── sow-intake/SKILL.md       # SOW → cited baseline + delivery brief
-│   └── scope-sentinel/SKILL.md   # request → in/out/ambiguous vs. baseline
-├── scripts/        # citation validation, revenue & date math, size→cost, event logging
-├── schemas/        # baseline.schema.json
-├── templates/      # delivery-brief.md, change-request.md
-├── config/         # qualitative sizing definitions, rate card
-├── eval/           # gold-set fixtures + run_eval.py harness
-├── .gitignore
-└── README.md
-```
 
-The shared layout is deliberate: both skills read the same schemas, write through the same templates, and call the same verified scripts, so the rules stay consistent across the pipeline.
+## Quick start
 
-## Using them
-
-These are Claude skills (Claude Code / Claude apps). Clone the repo and point Claude at it, or copy the skill folders into your skills directory together with the shared root directories they depend on (`scripts/`, `schemas/`, `templates/`, `config/`):
+Requires Python 3.10 or later.
 
 ```bash
 git clone git@github.com:slopez-z/skills.git
+cd skills
+python -m venv .venv
 ```
 
-Each skill triggers by its `description` — just ask *"run intake on this SOW"* or *"is this request in scope?"*. Both expect a `projects/<project>/` working folder; see each `SKILL.md` for the exact inputs and the human-approval gates.
+Activate the environment on Windows PowerShell:
 
-## A note on scope
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python scripts\verify.py
+```
 
-These were built for my own delivery work and are shared as a reference for how agentic skills can be made safe enough to trust with client-sensitive workflows. They're a working reference, not a product. No client data ships in this repo.
+On macOS or Linux:
+
+```bash
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python scripts/verify.py
+```
+
+`verify.py` validates both skills, every JSON artifact, both schemas, all citations, both commercial models, the eval harness, installer behavior, and unit tests.
+
+## Synthetic demo projects
+
+The repository contains no client data. Two fictional projects under `examples/projects/` make the demo reproducible:
+
+- `acme-support-automation`: fixed-price intake plus an out-of-scope request containing prompt injection.
+- `northstar-analytics`: time-and-materials intake with conflicting monthly caps and a new-data-source request.
+
+Run the individual surfaces:
+
+```bash
+python eval/run_eval.py
+python scripts/portfolio_status.py
+python scripts/compute_revenue.py examples/projects/acme-support-automation
+python scripts/compute_revenue.py examples/projects/northstar-analytics
+```
+
+The included classification predictions exercise the evaluator. They are labeled examples, not claimed live model results. Replace `eval/predictions/classifications.example.json` with fresh outputs to evaluate another model or prompt revision.
+
+## Installation
+
+Install both skills and their shared runtime into a skills directory:
+
+```bash
+python scripts/install_skills.py ~/.codex/skills
+```
+
+Use `--force` only when you intend to replace an earlier installation. The installer places both skills at the target root and preserves shared scripts, schemas, templates, and configuration under `.delivery-guardrails/`.
+
+Each skill also includes `agents/openai.yaml` metadata for Codex-compatible discovery. The `SKILL.md` instructions remain tool-neutral enough to use from other agent environments that support repository skills.
+
+## PDF input
+
+`prepare_sow.py` accepts Markdown, UTF-8 text, and PDFs with extractable text. PDF extraction uses `pypdf` and writes a canonical `.extracted.txt` source for stable line citations.
+
+Image-only PDFs require OCR before intake. The workflow stops instead of pretending an empty extraction is valid.
+
+## Repository structure
+
+```text
+skills/                  Skill instructions and OpenAI interface metadata
+scripts/                 Deterministic gates, calculations, installer, and verification
+schemas/                 Baseline and scope-decision JSON Schemas
+templates/               Delivery Brief and Change Request templates
+config/                  Synthetic sizing policy and rate card
+examples/projects/       Fictional end-to-end fixtures
+eval/                    Gold labels, classification cases, and example predictions
+tests/                   Negative and portability tests
+```
+
+## Design limits
+
+- Citation validation proves that quoted text exists at the declared location. It does not prove that the model interpreted the clause correctly.
+- PDF text order depends on the source file. Complex layouts may require manual review or OCR.
+- The repository includes an evaluation harness, not a hosted model runner. Model invocation remains environment-specific.
+- The default rate card is synthetic. Real rates belong only in ignored project folders.
+
+These controls make AI output inspectable and fail-closed. They do not replace delivery judgment, legal review, or client approval.

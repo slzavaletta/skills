@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scope Sentinel"
+  short_description: "Classify requests against a cited SOW baseline"
+  default_prompt: "Use $scope-sentinel to classify this request against the project baseline and draft the required response."

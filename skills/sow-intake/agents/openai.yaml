@@ -1,0 +1,4 @@
+interface:
+  display_name: "SOW Intake"
+  short_description: "Build a cited delivery baseline from a SOW"
+  default_prompt: "Use $sow-intake to process this SOW into a validated baseline and delivery brief."

@@ -39,7 +39,7 @@ def money(amount, currency="USD"):
 
 
 def fixed_price(commercials, flags):
-    currency = commercials.get("currency", "USD")
+    currency = unwrap(commercials.get("currency", "USD"))
     total = unwrap(commercials.get("total_value"))
     schedule = commercials.get("payment_schedule", [])
 
@@ -51,7 +51,10 @@ def fixed_price(commercials, flags):
         print("Payment schedule:")
         sched_sum = 0.0
         for item in schedule:
-            amount = item.get("amount", 0) or 0
+            amount = item.get("amount")
+            if not isinstance(amount, (int, float)):
+                flags.append(f"payment amount for {item.get('trigger', '?')} is missing or invalid")
+                continue
             sched_sum += amount
             print(f"  {item.get('percent', '?')}% on {item.get('trigger', '?')}: {money(amount, currency)}")
         sched_sum = round(sched_sum, 2)
@@ -68,15 +71,15 @@ def fixed_price(commercials, flags):
 
 
 def time_and_materials(commercials, rate_card, flags):
-    currency = commercials.get("currency", "USD")
-    rates = commercials.get("rates", {})
+    currency = unwrap(commercials.get("currency", "USD"))
+    rates = commercials.get("rates", [])
     if rates:
         print("Hourly rates (as stated in SOW):")
-        for role, rate in rates.items():
-            print(f"  {role}: {money(rate, currency)}/h")
+        for item in rates:
+            print(f"  {item.get('role', '?')}: {money(item.get('hourly_rate', 0), currency)}/h")
 
     caps = commercials.get("monthly_hours_cap", "NOT_FOUND")
-    cap_values = caps if isinstance(caps, list) else [caps]
+    cap_values = [unwrap(cap) for cap in caps] if isinstance(caps, list) else [unwrap(caps)]
     cap_values = sorted({c for c in cap_values if isinstance(c, (int, float))})
 
     blended = rate_card["blended_hourly_rate"]
@@ -91,7 +94,7 @@ def time_and_materials(commercials, rate_card, flags):
     for cap in cap_values:
         print(f"Monthly run-rate at {cap:.0f} h cap (blended {money(blended, currency)}/h): {money(cap * blended, currency)}")
 
-    duration = commercials.get("estimated_duration_weeks", "NOT_FOUND")
+    duration = unwrap(commercials.get("estimated_duration_weeks", "NOT_FOUND"))
     if isinstance(duration, list) and len(duration) == 2 and cap_values:
         weeks_min, weeks_max = duration
         low = cap_values[0] * blended * (weeks_min / 4.33)
@@ -105,7 +108,7 @@ def time_and_materials(commercials, rate_card, flags):
 
 
 def staff_augmentation(commercials, flags):
-    currency = commercials.get("currency", "USD")
+    currency = unwrap(commercials.get("currency", "USD"))
     team = commercials.get("team", [])
     computed_monthly = 0.0
     print("Team composition:")
@@ -123,7 +126,7 @@ def staff_augmentation(commercials, flags):
             f"{money(computed_monthly, currency)}"
         )
 
-    term_months = commercials.get("term_months")
+    term_months = unwrap(commercials.get("term_months"))
     if isinstance(term_months, (int, float)):
         computed_term = computed_monthly * term_months
         print(f"Computed term total ({term_months:.0f} months): {money(computed_term, currency)}")

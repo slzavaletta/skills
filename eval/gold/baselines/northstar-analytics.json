@@ -1,0 +1,25 @@
+{
+  "project_id": "northstar-analytics",
+  "scalar_fields": {
+    "client": "Northstar Retail",
+    "project_name": "Analytics Enablement",
+    "engagement_type": "time_and_materials",
+    "commercials.currency": "USD",
+    "dates.start_date": "2026-10-01",
+    "dates.end_date": "NOT_FOUND"
+  },
+  "counts": {
+    "milestones": 1,
+    "scope_items": 2,
+    "deliverables": 1,
+    "assumptions": 1,
+    "exclusions": 1
+  },
+  "expected_not_found": ["dates.end_date"],
+  "expected_risk_flags": [
+    "missing_end_date",
+    "hours_cap_contradiction",
+    "client_controlled_prioritization"
+  ],
+  "expected_cap_values": [120, 160]
+}
