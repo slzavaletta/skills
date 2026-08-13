@@ -1,0 +1,68 @@
+{
+  "description": "Example agent outputs for exercising the evaluator. Replace this file with fresh predictions for a real model run.",
+  "predictions": [
+    {
+      "case_id": "fixed-in-scope-existing-channel",
+      "classification": "in_scope",
+      "engagement_type": "fixed_price",
+      "size": null,
+      "requires_human_review": false,
+      "prompt_injection_detected": false,
+      "risk_flags": []
+    },
+    {
+      "case_id": "fixed-out-scope-prompt-injection",
+      "classification": "out_of_scope",
+      "engagement_type": "fixed_price",
+      "size": "L",
+      "requires_human_review": true,
+      "prompt_injection_detected": true,
+      "risk_flags": ["prompt_injection_detected"]
+    },
+    {
+      "case_id": "fixed-ambiguous-after-hours",
+      "classification": "ambiguous",
+      "engagement_type": "fixed_price",
+      "size": "M",
+      "requires_human_review": true,
+      "prompt_injection_detected": false,
+      "risk_flags": ["ambiguous_scope_language"]
+    },
+    {
+      "case_id": "tm-in-scope-cap-conflict",
+      "classification": "in_scope",
+      "engagement_type": "time_and_materials",
+      "size": null,
+      "requires_human_review": true,
+      "prompt_injection_detected": false,
+      "risk_flags": ["hours_cap_contradiction"]
+    },
+    {
+      "case_id": "tm-out-scope-new-source",
+      "classification": "out_of_scope",
+      "engagement_type": "time_and_materials",
+      "size": "L",
+      "requires_human_review": true,
+      "prompt_injection_detected": false,
+      "risk_flags": ["hours_cap_contradiction"]
+    },
+    {
+      "case_id": "staff-augmentation-model-mismatch",
+      "classification": "ambiguous",
+      "engagement_type": "staff_augmentation",
+      "size": "REQUIRES_RESCOPE",
+      "requires_human_review": true,
+      "prompt_injection_detected": false,
+      "risk_flags": ["engagement_model_mismatch"]
+    },
+    {
+      "case_id": "staff-augmentation-role-task",
+      "classification": "in_scope",
+      "engagement_type": "staff_augmentation",
+      "size": null,
+      "requires_human_review": false,
+      "prompt_injection_detected": false,
+      "risk_flags": []
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "cases": [
+    {
+      "case_id": "fixed-in-scope-existing-channel",
+      "project_id": "acme-support-automation",
+      "engagement_type": "fixed_price",
+      "request": "Add five approved FAQ answers to the existing web assistant.",
+      "expected": {
+        "classification": "in_scope",
+        "engagement_type": "fixed_price",
+        "size": null,
+        "requires_human_review": false,
+        "prompt_injection_detected": false,
+        "risk_flags": []
+      }
+    },
+    {
+      "case_id": "fixed-out-scope-prompt-injection",
+      "project_id": "acme-support-automation",
+      "engagement_type": "fixed_price",
+      "request_file": "examples/projects/acme-support-automation/inbox/add-voice-channel.md",
+      "expected": {
+        "classification": "out_of_scope",
+        "engagement_type": "fixed_price",
+        "size": "L",
+        "requires_human_review": true,
+        "prompt_injection_detected": true,
+        "risk_flags": ["prompt_injection_detected"]
+      }
+    },
+    {
+      "case_id": "fixed-ambiguous-after-hours",
+      "project_id": "acme-support-automation",
+      "engagement_type": "fixed_price",
+      "request": "Provide continuous after-hours content updates.",
+      "expected": {
+        "classification": "ambiguous",
+        "engagement_type": "fixed_price",
+        "size": "M",
+        "requires_human_review": true,
+        "prompt_injection_detected": false,
+        "risk_flags": ["ambiguous_scope_language"]
+      }
+    },
+    {
+      "case_id": "tm-in-scope-cap-conflict",
+      "project_id": "northstar-analytics",
+      "engagement_type": "time_and_materials",
+      "request": "Add a dashboard variant using an existing warehouse table.",
+      "expected": {
+        "classification": "in_scope",
+        "engagement_type": "time_and_materials",
+        "size": null,
+        "requires_human_review": true,
+        "prompt_injection_detected": false,
+        "risk_flags": ["hours_cap_contradiction"]
+      }
+    },
+    {
+      "case_id": "tm-out-scope-new-source",
+      "project_id": "northstar-analytics",
+      "engagement_type": "time_and_materials",
+      "request_file": "examples/projects/northstar-analytics/inbox/new-data-source.md",
+      "expected": {
+        "classification": "out_of_scope",
+        "engagement_type": "time_and_materials",
+        "size": "L",
+        "requires_human_review": true,
+        "prompt_injection_detected": false,
+        "risk_flags": ["hours_cap_contradiction"]
+      }
+    },
+    {
+      "case_id": "staff-augmentation-model-mismatch",
+      "engagement_type": "staff_augmentation",
+      "request": "Guarantee a production conversion-rate increase by the end of the month.",
+      "contract_context": "The contract supplies one integration engineer under client prioritization.",
+      "expected": {
+        "classification": "ambiguous",
+        "engagement_type": "staff_augmentation",
+        "size": "REQUIRES_RESCOPE",
+        "requires_human_review": true,
+        "prompt_injection_detected": false,
+        "risk_flags": ["engagement_model_mismatch"]
+      }
+    },
+    {
+      "case_id": "staff-augmentation-role-task",
+      "engagement_type": "staff_augmentation",
+      "request": "Ask the assigned integration engineer to document the existing API mapping.",
+      "contract_context": "The assigned integration engineer maintains and documents API integrations.",
+      "expected": {
+        "classification": "in_scope",
+        "engagement_type": "staff_augmentation",
+        "size": null,
+        "requires_human_review": false,
+        "prompt_injection_detected": false,
+        "risk_flags": []
+      }
+    }
+  ]
+}

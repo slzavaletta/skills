@@ -1,0 +1,19 @@
+{
+  "case_id": "tm-out-scope-new-source",
+  "project_id": "northstar-analytics",
+  "request_source": "inbox/new-data-source.md",
+  "request_summary": "Add purchase data from a new external commerce API.",
+  "classification": "out_of_scope",
+  "engagement_type": "time_and_materials",
+  "rationale": "The request introduces an external data source and ingestion work that the SOW excludes. The monthly cap contradiction blocks commitment.",
+  "sow_citation": {
+    "section": "8",
+    "quote": "E1. New external data sources and new ingestion pipelines are excluded.",
+    "source_line_start": 32,
+    "source_line_end": 32
+  },
+  "size": "L",
+  "requires_human_review": true,
+  "prompt_injection_detected": false,
+  "risk_flags": ["hours_cap_contradiction"]
+}

@@ -1,0 +1,129 @@
+{
+  "project_id": "acme-support-automation",
+  "client": {
+    "value": "Acme Services",
+    "citation": { "section": "1", "quote": "Client: Acme Services.", "source_line_start": 4, "source_line_end": 4 }
+  },
+  "project_name": {
+    "value": "Support Automation",
+    "citation": { "section": "1", "quote": "Project: Support Automation.", "source_line_start": 5, "source_line_end": 5 }
+  },
+  "engagement_type": {
+    "value": "fixed_price",
+    "citation": { "section": "2", "quote": "Engagement model: Fixed Price.", "source_line_start": 9, "source_line_end": 9 }
+  },
+  "language": {
+    "value": "English",
+    "citation": { "section": "1", "quote": "Delivery language: English.", "source_line_start": 6, "source_line_end": 6 }
+  },
+  "dates": {
+    "start_date": {
+      "value": "2026-09-01",
+      "citation": { "section": "3", "quote": "The project starts on 2026-09-01 and ends on 2026-11-30.", "source_line_start": 13, "source_line_end": 13 }
+    },
+    "end_date": {
+      "value": "2026-11-30",
+      "citation": { "section": "3", "quote": "The project starts on 2026-09-01 and ends on 2026-11-30.", "source_line_start": 13, "source_line_end": 13 }
+    }
+  },
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Discovery and content inventory complete",
+      "date": "2026-09-15",
+      "citation": { "section": "6", "quote": "M1. Discovery and content inventory complete on 2026-09-15.", "source_line_start": 24, "source_line_end": 24 }
+    },
+    {
+      "id": "M2",
+      "name": "Production launch complete",
+      "date": "2026-11-30",
+      "citation": { "section": "6", "quote": "M2. Production launch complete on 2026-11-30.", "source_line_start": 25, "source_line_end": 25 }
+    }
+  ],
+  "scope_items": [
+    {
+      "id": "S1",
+      "text": "Configure an English-language support assistant for the existing web channel.",
+      "citation": { "section": "4", "quote": "S1. Configure an English-language support assistant for the existing web channel.", "source_line_start": 16, "source_line_end": 16 }
+    },
+    {
+      "id": "S2",
+      "text": "Integrate the assistant with the client's existing Zendesk instance.",
+      "citation": { "section": "4", "quote": "S2. Integrate the assistant with the client's existing Zendesk instance.", "source_line_start": 17, "source_line_end": 17 }
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "text": "One configured support assistant for the existing web channel.",
+      "citation": { "section": "5", "quote": "D1. One configured support assistant for the existing web channel.", "source_line_start": 20, "source_line_end": 20 }
+    },
+    {
+      "id": "D2",
+      "text": "One production integration with the existing Zendesk instance.",
+      "citation": { "section": "5", "quote": "D2. One production integration with the existing Zendesk instance.", "source_line_start": 21, "source_line_end": 21 }
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A1",
+      "text": "The client provides approved support content by 2026-09-08.",
+      "citation": { "section": "7", "quote": "A1. The client provides approved support content by 2026-09-08.", "source_line_start": 28, "source_line_end": 28 }
+    },
+    {
+      "id": "A2",
+      "text": "The client provides Zendesk sandbox access before integration starts.",
+      "citation": { "section": "7", "quote": "A2. The client provides Zendesk sandbox access before integration starts.", "source_line_start": 29, "source_line_end": 29 }
+    }
+  ],
+  "exclusions": [
+    {
+      "id": "E1",
+      "text": "Voice, WhatsApp, and social messaging channels are excluded.",
+      "citation": { "section": "8", "quote": "E1. Voice, WhatsApp, and social messaging channels are excluded.", "source_line_start": 32, "source_line_end": 32 }
+    }
+  ],
+  "slas": [
+    {
+      "id": "SLA1",
+      "text": "Critical production incidents receive an initial response within four business hours.",
+      "citation": { "section": "10", "quote": "SLA1. Critical production incidents receive an initial response within four business hours.", "source_line_start": 38, "source_line_end": 38 }
+    }
+  ],
+  "commercials": {
+    "model": {
+      "value": "fixed_price",
+      "citation": { "section": "2", "quote": "Engagement model: Fixed Price.", "source_line_start": 9, "source_line_end": 9 }
+    },
+    "currency": {
+      "value": "USD",
+      "citation": { "section": "2", "quote": "Contract value: USD 48,000.", "source_line_start": 10, "source_line_end": 10 }
+    },
+    "total_value": {
+      "value": 48000,
+      "citation": { "section": "2", "quote": "Contract value: USD 48,000.", "source_line_start": 10, "source_line_end": 10 }
+    },
+    "payment_schedule": [
+      {
+        "trigger": "kickoff",
+        "percent": 50,
+        "amount": 24000,
+        "citation": { "section": "9", "quote": "Payment schedule: USD 24,000 at kickoff and USD 24,000 at production launch.", "source_line_start": 35, "source_line_end": 35 }
+      },
+      {
+        "trigger": "production launch",
+        "percent": 50,
+        "amount": 24000,
+        "citation": { "section": "9", "quote": "Payment schedule: USD 24,000 at kickoff and USD 24,000 at production launch.", "source_line_start": 35, "source_line_end": 35 }
+      }
+    ]
+  },
+  "risk_flags": [],
+  "extraction_meta": {
+    "model": "synthetic-fixture",
+    "extracted_at": "2026-08-13T00:00:00Z",
+    "source_file": "sow.md",
+    "fields_not_found": [],
+    "fields_pending_review": []
+  }
+}
